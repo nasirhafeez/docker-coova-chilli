@@ -1,0 +1,99 @@
+echo "Starting Deployment !!!"
+echo "Please share domain Name:"
+read domain
+echo "domain entered $domain"
+
+docker network create internal-network
+
+####################Database Deployment ###################################
+sleep 2
+echo "Deploying MariaDB container"
+echo "Please give directory for the persistent storage to be created"
+read mysql_dir
+echo "Please insert DB password for portal and keep note of it"
+read portal_db_pass
+mkdir -p $mysql_dir
+docker run -d --net internal-network --name mariadb -v $mysql_dir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=kjhdkjsahd0981@3History mariadb:10.2
+
+sleep 20
+
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database portal;"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "CREATE USER 'user1'@'%' IDENTIFIED BY '$portal_db_pass';"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "GRANT ALL PRIVILEGES ON portal.* TO 'user1'@'%';"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e  "FLUSH PRIVILEGES;"
+
+echo "Please insert DB password for radius and keep note of it"
+read radius_db_pass
+
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database radius;"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "CREATE USER 'radius'@'%' IDENTIFIED BY '$radius_db_pass';"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "GRANT ALL PRIVILEGES ON radius.* TO 'radius'@'%';"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e  "FLUSH PRIVILEGES;"
+###schema import for radius###############
+docker exec -i mariadb sh -c 'exec mysql -u root -pkjhdkjsahd0981@3History radius' < $(pwd)/Cova_Freeradius/scehma.sql;
+
+####################Free Radius Deployment ###################################
+
+echo "Deploying Free Radius container"
+docker run --name my-radius -d -v $(pwd)/Cova_Freeradius/users:/etc/raddb/users -v $(pwd)/Cova_Freeradius/clients.conf:/etc/raddb/clients.conf -v $(pwd)/Cova_Freeradius/sql:/etc/raddb/mods-available/sql freeradius/freeradius-server
+sleep 15
+docker exec -it my-radius ln -s /etc/raddb/mods-available/sql /etc/raddb/mods-enabled/
+
+
+####################Cova portal Deployment ###################################
+
+
+mkdir -p $(pwd)/certs/etc/letsencrypt
+mkdir -p $(pwd)/certs/var/lib/letsencrypt
+mkdir -p $(pwd)/certs/var/log/letsencrypt
+
+sed -i 's/docker.nasirhafeez.com/'$domain'/g' Dockerfile
+mv $(pwd)/Cova_Web_Portal/*.com $(pwd)/Cova_Web_Portal/$domain
+mv $(pwd)/Cova_Web_Portal/sites-available/* $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
+sed -i 's/docker.nasirhafeez.com/'$domain'/g' $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
+
+docker build -t portal-image .
+
+sleep 5
+
+docker image list
+
+mkdir dummy-data
+echo "Test" > dummy-data/index.html
+
+docker run -d --name my-apache-dummy -p 80:80 -v $(pwd)/dummy-data:/var/www/html portal-image
+sudo docker run -it --rm \
+	-v $(pwd)/certs/etc/letsencrypt:/etc/letsencrypt \
+	-v $(pwd)/certs/var/lib/letsencrypt:/var/lib/letsencrypt \
+	-v $(pwd)/dummy-data:/data/letsencrypt \
+	-v $(pwd)/certs/var/log/letsencrypt:/var/log/letsencrypt \
+	certbot/certbot \
+	certonly --webroot \
+	--email arsalan.zahoor@hotmail.com --agree-tos --no-eff-email \
+	--webroot-path=/data/letsencrypt \
+	-d $domain
+
+sleep 10
+
+#docker stop my-apache-dummy
+#docker rm my-apache-dummy
+#rm -rf dummy-data
+
+docker run -d --net internal-network --name portal -p 443:443 \
+-v $(pwd)/Cova_Web_Portal/apache2/apache2.conf:/etc/apache2/apache2.conf \
+-v $(pwd)/Cova_Web_Portal/$domain:/var/www/$domain \
+-v $(pwd)/Cova_Web_Portal/sites-available:/etc/apache2/sites-available/ \
+-v $(pwd)/certs/etc/letsencrypt/live/$domain/cert.pem:/etc/letsencrypt/live/$domain/cert.pem \
+-v $(pwd)/certs/etc/letsencrypt/live/$domain/fullchain.pem:/etc/letsencrypt/live/$domain/fullchain.pem \
+-v $(pwd)/certs/etc/letsencrypt/live/$domain/privkey.pem:/etc/letsencrypt/live/$domain/privkey.pem \
+portal-image
+
+
+docker exec -it portal a2dissite 000-default.conf
+docker exec -it portal a2ensite $domain
+docker exec -it portal a2enmod ssl
+docker exec -it portal service apache2 reload
+
+
+ufw allow 80:80/tcp
+ufw allow 443:443/tcp

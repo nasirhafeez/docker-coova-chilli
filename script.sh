@@ -75,9 +75,9 @@ sudo docker run -it --rm \
 
 sleep 10
 
-#docker stop my-apache-dummy
-#docker rm my-apache-dummy
-#rm -rf dummy-data
+docker stop my-apache-dummy
+docker rm my-apache-dummy
+rm -rf dummy-data
 
 docker run -d --net internal-network --name portal -p 443:443 \
 -v $(pwd)/Cova_Web_Portal/apache2/apache2.conf:/etc/apache2/apache2.conf \

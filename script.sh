@@ -48,7 +48,7 @@ mkdir -p $(pwd)/certs/var/lib/letsencrypt
 mkdir -p $(pwd)/certs/var/log/letsencrypt
 
 sed -i 's/docker.nasirhafeez.com/'$domain'/g' Dockerfile
-mv $(pwd)/Cova_Web_Portal/*.com $(pwd)/Cova_Web_Portal/$domain
+mv $(pwd)/Cova_Web_Portal/docker.nasirhafeez.com-backup $(pwd)/Cova_Web_Portal/$domain
 mv $(pwd)/Cova_Web_Portal/sites-available/* $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
 sed -i 's/docker.nasirhafeez.com/'$domain'/g' $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
 

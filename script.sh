@@ -36,9 +36,6 @@ docker exec -i mariadb sh -c 'exec mysql -u root -pkjhdkjsahd0981@3History radiu
 
 echo "Deploying Free Radius container"
 docker run --name my-radius -d -v $(pwd)/Cova_Freeradius/users:/etc/raddb/users -v $(pwd)/Cova_Freeradius/clients.conf:/etc/raddb/clients.conf -v $(pwd)/Cova_Freeradius/sql:/etc/raddb/mods-available/sql freeradius/freeradius-server
-sleep 15
-docker exec -it my-radius ln -s /etc/raddb/mods-available/sql /etc/raddb/mods-enabled/
-
 
 ####################Cova portal Deployment ###################################
 

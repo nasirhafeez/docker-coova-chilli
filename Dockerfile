@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-ARG domain=docker2.nasirhafeez.com
+ARG domain=docker.nasirhafeez.com
 
 ARG DEBIAN_FRONTEND=noninteractive
 

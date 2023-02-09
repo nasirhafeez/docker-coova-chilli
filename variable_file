@@ -1,0 +1,5 @@
+domain=docker3.nasirhafeez.com
+mysql_dir=/root/vol
+portal_db_pass=123456
+radius_db_pass=123456
+email=arsalan.zahoor@hotmail.com

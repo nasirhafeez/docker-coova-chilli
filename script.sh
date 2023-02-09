@@ -1,29 +1,30 @@
+source variable_file
 echo "Starting Deployment !!!"
-echo "Please share domain Name:"
-read domain
-echo "domain entered $domain"
+#echo "Please share domain Name:"
+#read domain
+echo "Deploying for $domain"
 
 docker network create internal-network
 
 ####################Database Deployment ###################################
 sleep 2
 echo "Deploying MariaDB container"
-echo "Please give directory for the persistent storage to be created"
-read mysql_dir
-echo "Please insert DB password for portal and keep note of it"
-read portal_db_pass
+#echo "Please give directory for the persistent storage to be created"
+#read mysql_dir
+#echo "Please insert DB password for portal and keep note of it"
+#read portal_db_pass
 mkdir -p $mysql_dir
 docker run -d --net internal-network --name mariadb -v $mysql_dir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=kjhdkjsahd0981@3History mariadb:10.2
 
-sleep 20
+sleep 10
 
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database portal;"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "CREATE USER 'user1'@'%' IDENTIFIED BY '$portal_db_pass';"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "GRANT ALL PRIVILEGES ON portal.* TO 'user1'@'%';"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e  "FLUSH PRIVILEGES;"
 
-echo "Please insert DB password for radius and keep note of it"
-read radius_db_pass
+#echo "Please insert DB password for radius and keep note of it"
+#read radius_db_pass
 
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database radius;"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "CREATE USER 'radius'@'%' IDENTIFIED BY '$radius_db_pass';"
@@ -66,11 +67,11 @@ sudo docker run -it --rm \
 	-v $(pwd)/certs/var/log/letsencrypt:/var/log/letsencrypt \
 	certbot/certbot \
 	certonly --webroot \
-	--email arsalan.zahoor@hotmail.com --agree-tos --no-eff-email \
+	--email $email --agree-tos --no-eff-email \
 	--webroot-path=/data/letsencrypt \
 	-d $domain
 
-sleep 10
+sleep 5
 
 docker stop my-apache-dummy
 docker rm my-apache-dummy

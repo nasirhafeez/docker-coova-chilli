@@ -49,6 +49,7 @@ sed -i 's/docker.nasirhafeez.com/'$domain'/g' Dockerfile
 mv $(pwd)/Cova_Web_Portal/docker.nasirhafeez.com-backup $(pwd)/Cova_Web_Portal/$domain
 mv $(pwd)/Cova_Web_Portal/sites-available/* $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
 sed -i 's/docker.nasirhafeez.com/'$domain'/g' $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
+sed -i 's/User1@123456/'$portal_db_pass'/g' $(pwd)/Cova_Web_Portal/$domain/.env
 
 docker build -t portal-image .
 

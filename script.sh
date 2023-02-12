@@ -49,7 +49,16 @@ sed -i 's/docker.nasirhafeez.com/'$domain'/g' Dockerfile
 mv $(pwd)/Cova_Web_Portal/docker.nasirhafeez.com-backup $(pwd)/Cova_Web_Portal/$domain
 mv $(pwd)/Cova_Web_Portal/sites-available/* $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
 sed -i 's/docker.nasirhafeez.com/'$domain'/g' $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
-sed -i 's/User1@123456/'$portal_db_pass'/g' $(pwd)/Cova_Web_Portal/$domain/.env
+#sed -i 's/User1@123456/'$portal_db_pass'/g' $(pwd)/Cova_Web_Portal/$domain/.env
+sed -i -e '/HOST\_IP =/ s/= .*/= "'"$HOST_IP"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+sed -i -e '/DB\_USER =/ s/= .*/= "'"$DB_USER"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+sed -i -e '/DB\_PASS =/ s/= .*/= "'"$DB_PASS"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+sed -i -e '/DB\_NAME =/ s/= .*/= "'"$DB_NAME"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+sed -i -e '/TABLE\_NAME =/ s/= .*/= "'"$TABLE_NAME"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+sed -i -e '/BUSINESS\_NAME =/ s/= .*/= "'"$BUSINESS_NAME"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+sed -i -e '/REDIRECT\_URL =/ s/= .*/= "'"$REDIRECT_URL"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+sed -i -e '/UAM\_SECRET =/ s/= .*/= "'"$UAM_SECRET"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+
 
 docker build -t portal-image .
 

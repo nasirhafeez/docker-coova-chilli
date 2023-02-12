@@ -1,21 +1,13 @@
 source variable_file
 echo "Starting Deployment !!!"
-#echo "Please share domain Name:"
-#read domain
 echo "Deploying for $domain"
-
 docker network create internal-network
 
-####################Database Deployment ###################################
+#Database Deployment
 sleep 2
 echo "Deploying MariaDB container"
-#echo "Please give directory for the persistent storage to be created"
-#read mysql_dir
-#echo "Please insert DB password for portal and keep note of it"
-#read portal_db_pass
 mkdir -p $mysql_dir
 docker run -d --net internal-network --name mariadb -v $mysql_dir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=kjhdkjsahd0981@3History mariadb:10.2
-
 sleep 10
 
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database portal;"
@@ -23,23 +15,21 @@ docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "CREATE USER 
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "GRANT ALL PRIVILEGES ON portal.* TO 'user1'@'%';"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e  "FLUSH PRIVILEGES;"
 
-#echo "Please insert DB password for radius and keep note of it"
-#read radius_db_pass
-
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database radius;"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "CREATE USER 'radius'@'%' IDENTIFIED BY '$radius_db_pass';"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "GRANT ALL PRIVILEGES ON radius.* TO 'radius'@'%';"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e  "FLUSH PRIVILEGES;"
-###schema import for radius###############
+
+#schema import for radius
 docker exec -i mariadb sh -c 'exec mysql -u root -pkjhdkjsahd0981@3History radius' < $(pwd)/Cova_Freeradius/scehma.sql;
 
-####################Free Radius Deployment ###################################
+#Free Radius Deployment
 
+sed -i -e '/password =/ s/= .*/= "'"$radius_db_pass"'"/' $(pwd)/Cova_Freeradius/sql
 echo "Deploying Free Radius container"
 docker run --name my-radius -d -v $(pwd)/Cova_Freeradius/users:/etc/raddb/users -v $(pwd)/Cova_Freeradius/clients.conf:/etc/raddb/clients.conf -v $(pwd)/Cova_Freeradius/sql:/etc/raddb/mods-available/sql freeradius/freeradius-server
 
-####################Cova portal Deployment ###################################
-
+#Cova portal Deployment
 
 mkdir -p $(pwd)/certs/etc/letsencrypt
 mkdir -p $(pwd)/certs/var/lib/letsencrypt
@@ -59,13 +49,9 @@ sed -i -e '/BUSINESS\_NAME =/ s/= .*/= "'"$BUSINESS_NAME"'"/' $(pwd)/Cova_Web_Po
 sed -i -e '/REDIRECT\_URL =/ s/= .*/= "'"$REDIRECT_URL"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
 sed -i -e '/UAM\_SECRET =/ s/= .*/= "'"$UAM_SECRET"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
 
-
 docker build -t portal-image .
-
 sleep 5
-
 docker image list
-
 mkdir dummy-data
 echo "Test" > dummy-data/index.html
 
@@ -82,7 +68,6 @@ sudo docker run -it --rm \
 	-d $domain
 
 sleep 5
-
 docker stop my-apache-dummy
 docker rm my-apache-dummy
 rm -rf dummy-data
@@ -101,7 +86,6 @@ docker exec -it portal a2dissite 000-default.conf
 docker exec -it portal a2ensite $domain
 docker exec -it portal a2enmod ssl
 docker exec -it portal service apache2 reload
-
 
 ufw allow 80:80/tcp
 ufw allow 443:443/tcp

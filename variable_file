@@ -1,5 +1,28 @@
+#Domain Name
 domain=docker3.nasirhafeez.com
+
+#Mysql Persistent Dir
 mysql_dir=/root/vol
-portal_db_pass=123456
+
+#Radius DB
 radius_db_pass=123456
+
+#Email Address
 email=arsalan.zahoor@hotmail.com
+
+####Web UI portal#######
+#DB parameters
+HOST_IP=192.168.20.1
+DB_USER=user1
+DB_PASS=aikdoteen
+DB_NAME=portal
+TABLE_NAME=
+
+#Friendly Business name
+BUSINESS_NAME=
+
+#Redirect URL after successful authorization
+REDIRECT_URL=
+
+#UAM Parameters
+UAM_SECRET=

@@ -10,9 +10,9 @@ mkdir -p $mysql_dir
 docker run -d --net internal-network --name mariadb -v $mysql_dir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=kjhdkjsahd0981@3History mariadb:10.2
 sleep 10
 
-docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database portal;"
-docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "CREATE USER 'user1'@'%' IDENTIFIED BY '$portal_db_pass';"
-docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "GRANT ALL PRIVILEGES ON portal.* TO 'user1'@'%';"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database $DB_NAME;"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
+docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "GRANT ALL PRIVILEGES ON portal.* TO '$DB_USER'@'%';"
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e  "FLUSH PRIVILEGES;"
 
 docker exec -it mariadb mysql -u root -pkjhdkjsahd0981@3History -e "create database radius;"
@@ -40,7 +40,7 @@ mv $(pwd)/Cova_Web_Portal/docker.nasirhafeez.com-backup $(pwd)/Cova_Web_Portal/$
 mv $(pwd)/Cova_Web_Portal/sites-available/* $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
 sed -i 's/docker.nasirhafeez.com/'$domain'/g' $(pwd)/Cova_Web_Portal/sites-available/$domain.conf
 #sed -i 's/User1@123456/'$portal_db_pass'/g' $(pwd)/Cova_Web_Portal/$domain/.env
-sed -i -e '/HOST\_IP =/ s/= .*/= "'"$HOST_IP"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
+#sed -i -e '/HOST\_IP =/ s/= .*/= "'"$HOST_IP"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
 sed -i -e '/DB\_USER =/ s/= .*/= "'"$DB_USER"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
 sed -i -e '/DB\_PASS =/ s/= .*/= "'"$DB_PASS"'"/' $(pwd)/Cova_Web_Portal/$domain/.env
 sed -i -e '/DB\_NAME =/ s/= .*/= "'"$DB_NAME"'"/' $(pwd)/Cova_Web_Portal/$domain/.env

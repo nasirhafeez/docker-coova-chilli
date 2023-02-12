@@ -12,7 +12,6 @@ email=arsalan.zahoor@hotmail.com
 
 ####Web UI portal#######
 #DB parameters
-HOST_IP=192.168.20.1
 DB_USER=user1
 DB_PASS=aikdoteen
 DB_NAME=portal

@@ -9,7 +9,7 @@ mkdir -p $mysql_dir
 docker run -d --net internal-network --name mariadb -v $mysql_dir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD="$mysql_root_pass" mariadb:10.2
 sleep 10
 
-docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "create database '$DB_NAME';"
+docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "create database $DB_NAME;"
 docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
 docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "GRANT ALL PRIVILEGES ON portal.* TO '$DB_USER'@'%';"
 docker exec -it mariadb mysql -u root -p$mysql_root_pass -e  "FLUSH PRIVILEGES;"

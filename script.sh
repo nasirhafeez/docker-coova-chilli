@@ -16,7 +16,7 @@ docker exec -it mariadb mysql -u root -p$mysql_root_pass -e  "FLUSH PRIVILEGES;"
 
 docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "create database radius;"
 docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "CREATE USER 'radius'@'%' IDENTIFIED BY '$radius_db_pass';"
-docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "GRANT ALL PRIVILEGES ON radius.* TO 'radius'@'%';"coovachilli
+docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "GRANT ALL PRIVILEGES ON radius.* TO 'radius'@'%';"
 docker exec -it mariadb mysql -u root -p$mysql_root_pass -e  "FLUSH PRIVILEGES;"
 
 #schema import for radius

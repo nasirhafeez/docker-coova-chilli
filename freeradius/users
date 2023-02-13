@@ -1,3 +1,4 @@
+DEFAULT Auth-Type := Accept
 #
 #       Configuration file for the rlm_files module.
 #       Please see rlm_files(5) manpage for more information.
@@ -43,7 +44,6 @@
 #       educational purposes. They may be deleted from the deployed
 #       configuration without impacting the operation of the server.
 #
-DEFAULT Auth-Type := Accept
 # Deny access for a specific user.  Note that this entry MUST
 # be before any other 'Auth-Type' attribute which results in the user
 # being authenticated.

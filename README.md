@@ -1,9 +1,15 @@
-# cova_portal
-git clone https://github.com/arsalan-zahoor/Cova_portal_with_Free_Radius
-change variables values in variable file
-vi variable_file
-Give execution rights to Bash script 
-cd Cova_portal_with_Free_Radius
+# Dockerized Coova Chilli External Portal
+
+Change variables values in variable file
+
+```
+nano .env
+```
+
+Make shell script executable:
+
+```
 chmod +x script.sh
-Run script
 ./script.sh
+
+```

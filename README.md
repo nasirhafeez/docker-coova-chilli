@@ -11,5 +11,4 @@ Make shell script executable:
 ```
 chmod +x script.sh
 ./script.sh
-
 ```

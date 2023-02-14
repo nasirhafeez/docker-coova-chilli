@@ -7,7 +7,7 @@ sleep 2
 echo "Deploying MariaDB container"
 mkdir -p $mysql_dir
 docker run -d --net internal-network --name mariadb -v $mysql_dir:/var/lib/mysql -e MYSQL_ROOT_PASSWORD="$mysql_root_pass" mariadb:10.2
-sleep 10
+sleep 20
 
 docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "create database $DB_NAME;"
 docker exec -it mariadb mysql -u root -p$mysql_root_pass -e "CREATE USER '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"

@@ -9,5 +9,6 @@ nano .env
 Run setup script:
 
 ```
-sh script.sh
+chmod +x script.sh
+./script.sh
 ```

@@ -6,9 +6,8 @@ Change variables values in env file
 nano .env
 ```
 
-Make shell script executable:
+Run setup script:
 
 ```
-chmod +x script.sh
-./script.sh
+sh script.sh
 ```

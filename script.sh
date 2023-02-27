@@ -26,7 +26,7 @@ docker exec -i mariadb sh -c 'exec mysql -u root -p'$mysql_root_pass' radius' < 
 
 sed -i -e '/password =/ s/= .*/= "'"$radius_db_pass"'"/' $(pwd)/freeradius/sql
 echo "Deploying Free Radius container"
-docker run --name my-radius -d -v $(pwd)/freeradius/users:/etc/raddb/users -v $(pwd)/freeradius/clients.conf:/etc/raddb/clients.conf -v $(pwd)/freeradius/sql:/etc/raddb/mods-available/sql freeradius/freeradius-server
+docker run --name my-radius -d -p 1812:1812/udp -p 1813:1813/udp -v $(pwd)/freeradius/users:/etc/raddb/users -v $(pwd)/freeradius/clients.conf:/etc/raddb/clients.conf -v $(pwd)/freeradius/sql:/etc/raddb/mods-available/sql freeradius/freeradius-server
 
 #Coova portal Deployment
 

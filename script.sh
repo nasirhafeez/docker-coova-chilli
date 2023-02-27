@@ -85,3 +85,5 @@ docker exec -it portal service apache2 reload
 
 ufw allow 80:80/tcp
 ufw allow 443:443/tcp
+ufw allow 1812:1812/udp
+ufw allow 1813:1813/udp
